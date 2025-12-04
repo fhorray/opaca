@@ -1,6 +1,6 @@
 {
-  "name": "@opaca/cli",
-  "version": "0.0.1",
+  "name": "opaca-cli",
+  "version": "0.0.9",
   "private": false,
   "type": "module",
   "bin": {
@@ -24,16 +24,22 @@
     "watch": "tsc -p tsconfig.json --watch",
     "check-types": "tsc --noEmit"
   },
+  "catalog": {
+    "@clack/prompts": "^0.7.0",
+    "@types/bun": "latest",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.0.0",
+    "opaca": "^0.0.8",
+    "opaca-dev": "^0.0.8"
+  },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
-    "opaca": "workspace:*",
-    "@opaca/dev": "workspace:*"
+    "opaca": "^0.0.8",
+    "opaca-dev": "^0.0.8"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^24.10.1",
-    "typescript": "^5.0.0",
-    "opaca": "workspace:*",
-    "@opaca/dev": "workspace:*"
+    "typescript": "^5.0.0"
   }
 }

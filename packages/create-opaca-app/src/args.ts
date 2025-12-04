@@ -1,4 +1,4 @@
-import type { CreateOptions, RuntimeTarget, TemplateId } from "./types";
+import type { CreateOptions, RuntimeTarget, TemplateId } from "./types.js";
 
 function isRuntimeTarget(value: string): value is RuntimeTarget {
   return value === "bun" || value === "cloudflare";

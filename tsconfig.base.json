@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "strict": true,
     "jsx": "react-jsx",
@@ -10,10 +10,10 @@
     "paths": {
       "opaca": ["packages/opaca/src"],
       "opaca/*": ["packages/opaca/src/*"],
-      "@opaca/dev": ["packages/opaca-dev/src"],
-      "opaca-dev/*": ["packages/opaca-dev/src/*"],
-      "@opaca/cli": ["packages/opaca-cli/src"],
-      "opaca-cli/*": ["packages/opaca-cli/src/*"],
+      "opaca-dev": ["packages/dev/src"],
+      "opaca-dev/*": ["packages/dev/src/*"],
+      "opaca-cli": ["packages/cli/src"],
+      "opaca-cli/*": ["packages/cli/src/*"],
       "#opaca/*": ["apps/playground/.opaca/*"],
       "@/opaca.config": ["apps/playground/opaca.config.ts"],
       "@/*": ["apps/playground/*"]

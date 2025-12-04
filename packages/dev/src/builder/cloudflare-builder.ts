@@ -490,7 +490,7 @@ async function compileCssAsset(entryPath: string, ctx: TransformContext): Promis
   try {
     await stat(entryPath);
   } catch (err) {
-    throw new Error(`Arquivo CSS não encontrado: ${entryPath}`);
+    throw new Error(`CSS file not found: ${entryPath}`);
   }
 
   const tailwindPlugin = await ensureTailwindPlugin(ctx);
@@ -686,7 +686,7 @@ async function compileStaticAsset(entryPath: string, ctx: TransformContext): Pro
 
   const file = Bun.file(entryPath);
   if (!(await file.exists())) {
-    throw new Error(`Arquivo de asset não encontrado: ${entryPath}`);
+    throw new Error(`Asset file not found: ${entryPath}`);
   }
 
   const buffer = new Uint8Array(await file.arrayBuffer());

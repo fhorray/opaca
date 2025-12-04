@@ -12,7 +12,7 @@ export type BunaHandleRequest = (
  * Usage:
  *
  *   import { handleRequest } from "opaca/runtime";
- *   import { withDevtools } from "@opaca/devtools";
+ *   import { withDevtools } from "opaca-devtools";
  *
  *   const devHandleRequest = withDevtools(handleRequest);
  *

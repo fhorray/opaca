@@ -196,7 +196,7 @@ async function loadBunaConfigFromFile(
       | undefined;
 
     if (!raw) {
-      throw new Error(`Arquivo "${configFile}" não exporta uma configuração.`);
+      throw new Error(`File "${configFile}" does'nt export any configuration.`);
     }
 
     if ("routesDir" in raw && "outDir" in raw) {

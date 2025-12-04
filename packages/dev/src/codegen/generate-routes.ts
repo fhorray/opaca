@@ -1,7 +1,7 @@
-import type { ResolvedBunaConfig } from "opaca/core";
 import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { CSS_ENTRY_PATH, FAVICON_ENTRY_PATH, ROOT_LAYOUT_ENTRY_PATH } from "./constants";
+import { ResolvedBunaConfig } from "opaca";
 
 const LAYOUT_EXTENSIONS = [".tsx", ".ts", ".jsx", ".js"];
 const API_DIR = "src/api";
@@ -141,8 +141,9 @@ export async function generateRoutes(config: ResolvedBunaConfig) {
   const hasFavicon = await fileExists(faviconPath);
 
   if (!hasFavicon) {
+    // TODO: add to healthy tab inside devtools?
     console.warn(
-      '[opaca codegen] Arquivo "public/favicon.ico" not found. Add it to define the route`s favicon ',
+      '[opaca codegen] File "public/favicon.ico" not found. Add it to define the route`s favicon ',
     );
   }
 

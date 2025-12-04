@@ -1,7 +1,7 @@
 import { serve } from "bun";
 import { routes } from "#opaca/routes.generated";
 import { handleRequest } from "opaca/runtime";
-import { withDevtools } from "@opaca/devtools";
+import { withDevtools } from "opaca-devtools";
 import config from "@/opaca.config";
 
 const devHandleRequest = withDevtools(handleRequest);

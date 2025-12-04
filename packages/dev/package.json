@@ -1,6 +1,6 @@
 {
-  "name": "@opaca/dev",
-  "version": "0.0.1",
+  "name": "opaca-dev",
+  "version": "0.0.9",
   "private": false,
   "type": "module",
   "main": "dist/index.js",
@@ -11,20 +11,20 @@
   ],
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./codegen": {
-      "import": "./src/codegen/generate-routes.ts",
-      "types": "./src/codegen/generate-routes.ts"
+      "import": "./dist/codegen/generate-routes.js",
+      "types": "./dist/codegen/generate-routes.d.ts"
     },
     "./builder": {
-      "import": "./src/builder/cloudflare-builder.ts",
-      "types": "./src/builder/cloudflare-builder.ts"
+      "import": "./dist/builder/cloudflare-builder.js",
+      "types": "./dist/builder/cloudflare-builder.d.ts"
     },
     "./runtime": {
-      "import": "./src/runtime/build-runtime.ts",
-      "types": "./src/runtime/build-runtime.ts"
+      "import": "./dist/runtime/build-runtime.js",
+      "types": "./dist/runtime/build-runtime.d.ts"
     },
     "./package.json": "./package.json"
   },
@@ -33,17 +33,27 @@
     "watch": "tsc -p tsconfig.json --watch",
     "check-types": "tsc --noEmit"
   },
+  "catalog": {
+    "bun": "1.2.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^24.10.1",
+    "@types/bun": "latest",
+    "@cloudflare/workers-types": "^4.20251202.0",
+    "bun-plugin-tailwind": "^0.1.2",
+    "opaca": "^0.0.8"
+  },
   "dependencies": {
     "bun-plugin-tailwind": "^0.1.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251202.0",
     "@types/bun": "latest",
     "@types/node": "^24.10.1",
-    "typescript": "^5.0.0",
-    "opaca": "workspace:*"
+    "opaca": "^0.0.8",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "bun": "^1.2.0",
-    "opaca": "workspace:*"
+    "opaca": "^0.0.8"
   }
 }

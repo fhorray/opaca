@@ -1,5 +1,5 @@
 import { spinner } from "@clack/prompts";
-import { generateRoutes } from "@opaca/dev";
+import { generateRoutes } from "opaca-dev";
 import { loadConfig } from "../utils/load-config";
 import type { CommandContext } from "../types";
 

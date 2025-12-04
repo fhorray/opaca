@@ -1,7 +1,7 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { spinner } from "@clack/prompts";
-import { generateRoutes } from "@opaca/dev";
+import { generateRoutes } from "opaca-dev";
 import { loadConfig } from "../utils/load-config";
 import type { CommandContext } from "../types";
 import { BUILD_RUNNER_TEMPLATE } from "../templates/build-runner-template";

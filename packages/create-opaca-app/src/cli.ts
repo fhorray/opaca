@@ -1,12 +1,12 @@
 import { resolve, basename } from "node:path";
 import { intro, outro } from "@clack/prompts";
 import { cyan, green } from "kolorist";
-import type { CreateOptions } from "./types";
-import { parseArgs } from "./args";
-import { ensureProjectName, ensureRuntimeTarget, ensureTemplate } from "./prompts";
-import { ensureEmptyDir } from "./fs-utils";
-import { scaffoldProject } from "./scaffold";
-import type { RuntimeTarget, TemplateId } from "./types";
+import type { CreateOptions } from "./types.js";
+import { parseArgs } from "./args.js";
+import { ensureProjectName, ensureRuntimeTarget, ensureTemplate } from "./prompts.js";
+import { ensureEmptyDir } from "./fs-utils.js";
+import { scaffoldProject } from "./scaffold/index.js";
+import type { RuntimeTarget, TemplateId } from "./types.js";
 
 export async function main(argv: string[]) {
   const options: CreateOptions = parseArgs(argv);

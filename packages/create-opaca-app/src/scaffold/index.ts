@@ -1,5 +1,5 @@
-import type { ScaffoldOptions } from "../types";
-import { scaffoldBaseTemplate } from "./template-base";
+import type { ScaffoldOptions } from "../types.js";
+import { scaffoldBaseTemplate } from "./template-base.js";
 
 export async function scaffoldProject(opts: ScaffoldOptions) {
   switch (opts.template) {

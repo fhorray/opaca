@@ -1,7 +1,7 @@
 export const BUILD_RUNNER_TEMPLATE = `#!/usr/bin/env bun
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { runBunaBuild } from "@opaca/dev";
+import { runBunaBuild } from "opaca-dev";
 
 function readRuntimeMarker(): string | undefined {
   let current = process.cwd();

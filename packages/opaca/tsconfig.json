@@ -1,10 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "../../apps/playground/.opaca/runtime",
     "declaration": true,
-    "declarationDir": "../../apps/playground/.opaca/runtime",
     "composite": true,
     "noEmit": false
   },

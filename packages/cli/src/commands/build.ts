@@ -1,7 +1,7 @@
 import { rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { cancel, isCancel, note, select } from "@clack/prompts";
-import { BUILD_RUNTIME_PRESETS, isBuildRuntime, type BuildRuntime } from "@opaca/dev";
+import { BUILD_RUNTIME_PRESETS, isBuildRuntime, type BuildRuntime } from "opaca-dev";
 import type { CommandContext } from "../types";
 import { runTurboTask } from "../utils/turbo";
 import { findWorkspaceRoot } from "../utils/workspace";

@@ -144,5 +144,5 @@ const worker = {
   },
 };
 
-// @ts-expect-error since it will be generated at .opaca/cloudflare folder when users run "bun run build --runtime cloudflare"
+// @ts-ignore since it will be generated at .opaca/cloudflare folder when users run "bun run build --runtime cloudflare"
 export default worker satisfies ExportedHandler<WorkerEnv>;

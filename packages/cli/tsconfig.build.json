@@ -7,8 +7,8 @@
     "paths": {
       "opaca": ["packages/opaca/dist"],
       "opaca/*": ["packages/opaca/dist/*"],
-      "@opaca/dev": ["packages/opaca-dev/dist"],
-      "opaca-dev/*": ["packages/opaca-dev/dist/*"]
+      "opaca-dev": ["packages/dev/dist"],
+      "opaca-dev/*": ["packages/dev/dist/*"]
     }
   },
   "include": ["src"]

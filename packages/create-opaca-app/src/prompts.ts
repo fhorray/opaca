@@ -1,5 +1,5 @@
 import { text, select, cancel, isCancel } from "@clack/prompts";
-import type { RuntimeTarget, TemplateId } from "./types";
+import type { RuntimeTarget, TemplateId } from "./types.js";
 
 export async function ensureProjectName(initial?: string): Promise<string> {
   if (initial) return initial;

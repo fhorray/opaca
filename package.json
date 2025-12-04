@@ -1,0 +1,43 @@
+{
+  "name": "opaca-monorepo",
+  "version": "0.0.0",
+  "module": "src/entry.ts",
+  "type": "module",
+  "private": true,
+  "packageManager": "bun@1.2.0",
+  "catalog": {
+    "react": "19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "wkadd": "bash scripts/add.sh",
+    "wkrm": "bash scripts/remove.sh",
+    "wklink": "bash scripts/link.sh",
+    "wkunlink": "bash scripts/unlink.sh",
+    "wkpublish": "bash scripts/publish.sh",
+    "wkclean": "bash scripts/clean.sh",
+    "codegen": "opaca codegen",
+    "dev": "opaca dev",
+    "build": "opaca build",
+    "check-types": "opaca check-types"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "turbo": "^2.6.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "opaca": "workspace:*",
+    "@opaca/cli": "workspace:*",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "@opaca/dev",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./codegen": {
+      "import": "./src/codegen/generate-routes.ts",
+      "types": "./src/codegen/generate-routes.ts"
+    },
+    "./builder": {
+      "import": "./src/builder/cloudflare-builder.ts",
+      "types": "./src/builder/cloudflare-builder.ts"
+    },
+    "./runtime": {
+      "import": "./src/runtime/build-runtime.ts",
+      "types": "./src/runtime/build-runtime.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json --force",
+    "watch": "tsc -p tsconfig.json --watch",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bun-plugin-tailwind": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.0.0",
+    "opaca": "workspace:*"
+  },
+  "peerDependencies": {
+    "bun": "^1.2.0",
+    "opaca": "workspace:*"
+  }
+}

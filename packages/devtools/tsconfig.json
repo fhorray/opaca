@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "rootDir": "..",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "composite": true,
+    "noEmit": false
+  },
+  "include": ["src", "../opaca/src"]
+}

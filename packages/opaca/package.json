@@ -1,0 +1,62 @@
+{
+  "name": "opaca",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./core": {
+      "import": "./src/core/index.ts",
+      "types": "./src/core/index.ts"
+    },
+    "./router": {
+      "import": "./src/router/index.ts",
+      "types": "./src/router/index.ts"
+    },
+    "./query": {
+      "import": "./src/query/index.ts",
+      "types": "./src/query/index.ts"
+    },
+    "./react": {
+      "import": "./src/react/index.ts",
+      "types": "./src/react/index.ts"
+    },
+    "./runtime": {
+      "import": "./src/runtime/index.ts",
+      "types": "./src/runtime/index.ts"
+    },
+    "./server": {
+      "import": "./src/server/index.ts",
+      "types": "./src/server/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json --force",
+    "watch": "tsc -p tsconfig.json --watch",
+    "dev": "bun run watch",
+    "check-types": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "typescript": "^5.0.0"
+  }
+}

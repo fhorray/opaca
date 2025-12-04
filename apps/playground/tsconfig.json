@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "types": ["@cloudflare/workers-types"],
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@public/*": ["./public/*"],
+
+      "#opaca/*": [".opaca/*"],
+
+      "opaca": ["../../packages/opaca/src/index.ts"],
+      "opaca/*": ["../../packages/opaca/src/*"],
+
+      "opaca/runtime": [".opaca/runtime/index.js"],
+      "opaca/runtime/*": [".opaca/runtime/*"]
+    }
+  },
+  "include": [
+    "src",
+    ".opaca",
+    "opaca.config.ts",
+    "types",
+    "bun-env.d.ts"
+  ],
+  "exclude": ["dist", "node_modules"]
+}

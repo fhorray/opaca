@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "composite": true,
+    "noEmit": false
+  },
+  "include": ["src", "../opaca-dev/src", "../opaca/src"]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "create-opaca-app",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "create-opaca-app": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json --force",
+    "watch": "tsc -p tsconfig.json --watch",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "kolorist": "^1.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.0.0"
+  }
+}

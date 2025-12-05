@@ -15,7 +15,8 @@
       "cache": false,
       "persistent": true,
       "dependsOn": ["^build"],
-      "outputs": []
+      "outputs": [],
+      "env": ["OPACA_TASK_RUNNER=bun"]
     }
   }
 }

@@ -3,9 +3,9 @@ import type { BuildAdapter, BuildContext } from "./types";
 import type { BunaBuildRuntime } from "../../utils/runtime";
 import { buildArgList } from "../../utils/argv";
 
-export function createBunaAdapter(runtime: BunaBuildRuntime): BuildAdapter {
+export function createOpacaAdapter(runtime: BunaBuildRuntime): BuildAdapter {
   return {
-    name: `buna:${runtime}`,
+    name: `opaca:${runtime}`,
     async prepare() {
       // Generation pipeline should already handle prepare work.
     },

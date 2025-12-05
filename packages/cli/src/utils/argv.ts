@@ -1,6 +1,6 @@
 import type { CommandArgs } from "../types";
 
-const DEFAULT_SKIP = new Set(["config", "runtime", "task-runner", "watch", "open", "port", "r"]);
+const DEFAULT_SKIP = new Set(["config", "runtime", "watch", "open", "port", "r"]);
 
 function formatFlag(key: string, value: unknown): string[] {
   if (value === false) {

@@ -32,8 +32,8 @@ function buildBaseTemplateFiles(opts: ScaffoldOptions): Record<string, string> {
     private: true,
     type: "module",
     scripts: {
-      "opaca:prepare": "opaca prepare --config opaca.config.ts",
-      dev: "bun run opaca:prepare && bun --hot src/entry.ts",
+      "opaca:prepare": "bunx opaca-cli prepare --config opaca.config.ts --watch",
+      dev: "bun run opaca:prepare & bun --hot src/entry.ts",
       build: "bun run opaca:prepare && bun run .opaca/build.ts",
       ...(isCloudflare
         ? {
@@ -51,6 +51,7 @@ function buildBaseTemplateFiles(opts: ScaffoldOptions): Record<string, string> {
       opaca: DEFAULTS.opaca,
     } as Record<string, string>,
     devDependencies: {
+      "opaca-cli": DEFAULTS.opacaCli,
       "opaca-dev": DEFAULTS.opacaDev,
       "opaca-devtools": DEFAULTS.opacaDevtools,
       "@types/react": DEFAULTS.typesReact,
@@ -69,7 +70,7 @@ function buildBaseTemplateFiles(opts: ScaffoldOptions): Record<string, string> {
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
     "lib": ["ESNext", "DOM"],
@@ -80,10 +81,7 @@ function buildBaseTemplateFiles(opts: ScaffoldOptions): Record<string, string> {
       "@/*": ["./*"],
       "@public/*": ["./public/*"],
 
-      "#opaca/*": [".opaca/*"],
-
-      "opaca/runtime": [".opaca/runtime/index.js"],
-      "opaca/runtime/*": [".opaca/runtime/*"]
+      "#opaca/*": [".opaca/*"]
     }
   },
   "include": ["src", ".opaca", "opaca.config.ts", "types", "bun-env.d.ts"],
@@ -258,6 +256,17 @@ AboutPage.meta = {
 export default AboutPage;
 `;
 
+  const pingApi = `import { createGET } from "opaca/server";
+
+export const GET = createGET(async ({ res }) => {
+  return res.json({
+    ok: true,
+    message: "pong",
+    timestamp: new Date().toISOString(),
+  });
+});
+`;
+
   const indexCss = `@import "tailwindcss";
 `;
 
@@ -360,8 +369,9 @@ bun install
     "public/logo.svg": logoSvg,
     "src/entry.ts": entryTs,
     "src/index.css": indexCss,
-    "src/layout.tsx": layoutTsx,
+    "src/_layout.tsx": layoutTsx,
     "src/routes/index.tsx": routeTsx,
+    "src/api/ping.ts": pingApi,
   };
 
   if (wrangler) {

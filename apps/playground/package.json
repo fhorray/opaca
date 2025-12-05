@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "opaca:prepare": "opaca prepare --config opaca.config.ts",
-    "dev": "bun run opaca:prepare && bun --hot src/entry.ts",
+    "opaca:prepare": "opaca prepare --config opaca.config.ts --watch",
+    "dev": "bun run opaca:prepare & bun --hot src/entry.ts",
     "build": "bun run opaca:prepare && bun run .opaca/build.ts",
     "deploy:cf": "NODE_ENV=production bun run build --runtime cloudflare && wrangler deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",

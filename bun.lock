@@ -41,14 +41,14 @@
     },
     "packages/cli": {
       "name": "opaca-cli",
-      "version": "0.0.9",
+      "version": "0.0.13",
       "bin": {
         "opaca": "./src/index.ts",
       },
       "dependencies": {
         "@clack/prompts": "^0.7.0",
-        "opaca": "^0.0.8",
-        "opaca-dev": "^0.0.8",
+        "opaca": "0.0.9",
+        "opaca-dev": "0.0.9",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -58,7 +58,7 @@
     },
     "packages/create-opaca-app": {
       "name": "create-opaca-app",
-      "version": "0.0.9",
+      "version": "0.0.13",
       "bin": {
         "create-opaca-app": "dist/index.js",
       },
@@ -73,7 +73,7 @@
     },
     "packages/dev": {
       "name": "opaca-dev",
-      "version": "0.0.9",
+      "version": "0.0.13",
       "dependencies": {
         "bun-plugin-tailwind": "^0.1.2",
       },
@@ -81,17 +81,17 @@
         "@cloudflare/workers-types": "^4.20251202.0",
         "@types/bun": "latest",
         "@types/node": "^24.10.1",
-        "opaca": "workspace:*",
+        "opaca": "0.0.9",
         "typescript": "^5.0.0",
       },
       "peerDependencies": {
         "bun": "^1.2.0",
-        "opaca": "workspace:*",
+        "opaca": "0.0.9",
       },
     },
     "packages/devtools": {
       "name": "opaca-devtools",
-      "version": "0.0.9",
+      "version": "0.0.13",
       "dependencies": {
         "@nanostores/persistent": "^1.2.0",
         "@nanostores/react": "^1.0.0",
@@ -112,13 +112,13 @@
     },
     "packages/opaca": {
       "name": "opaca",
-      "version": "0.0.9",
+      "version": "0.0.13",
       "devDependencies": {
         "@types/bun": "latest",
         "@types/node": "^24.10.1",
         "@types/react": "^19",
         "@types/react-dom": "^19",
-        "opaca-devtools": "workspace:*",
+        "opaca-devtools": "0.0.11",
         "react": "19.2.1",
         "react-dom": "19.2.1",
         "typescript": "^5.0.0",
@@ -283,5 +283,15 @@
     "use-sidecar": ["use-sidecar@1.1.3", "", { "dependencies": { "detect-node-es": "^1.1.0", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ=="],
 
     "@clack/prompts/is-unicode-supported": ["is-unicode-supported@2.1.0", "", { "bundled": true }, "sha512-mE00Gnza5EEB3Ds0HfMyllZzbBrmLOX3vfWoj9A9PEnTfratQ/BcaJOuMhnkhjXvb2+FkY3VuHqtAGpTPmglFQ=="],
+
+    "opaca/opaca-devtools": ["opaca-devtools@0.0.11", "", { "dependencies": { "@nanostores/persistent": "^1.2.0", "@nanostores/react": "^1.0.0", "lucide-react": "^0.555.0", "nanostores": "^1.1.0" }, "peerDependencies": { "@radix-ui/react-dialog": "^1.1.15", "react": "19.2.1", "react-dom": "19.2.1" } }, "sha512-HTUmZ4EQo+UeXGvBW+zyjUQ7Ig16wl44zTgqq74ag1jphH/Nr3XBKLTRQscOXf1RI1+mR9rEI4liweSq72/Scg=="],
+
+    "opaca-cli/opaca": ["opaca@0.0.9", "", { "peerDependencies": { "react": "19.2.1", "react-dom": "19.2.1" } }, "sha512-BhzHao2SWn1a3uzaW8riRKBLWsHx6D1KhcJebYhAPn3cO6A1sspYhk4O6CvUtKms042R+Xxby3ZjXd/4YOnOtg=="],
+
+    "opaca-cli/opaca-dev": ["opaca-dev@0.0.9", "", { "dependencies": { "bun-plugin-tailwind": "^0.1.2" }, "peerDependencies": { "bun": "^1.2.0", "opaca": "^0.0.8" } }, "sha512-VFbmAEk1Ah4jDYkGo4cSoBLCLp2XmU8lBthbizCJnQNyOABlfkyGH4ikZL1a+Pb//ALuBkShdL+cXyNFFQ7KOw=="],
+
+    "opaca-dev/opaca": ["opaca@0.0.9", "", { "peerDependencies": { "react": "19.2.1", "react-dom": "19.2.1" } }, "sha512-BhzHao2SWn1a3uzaW8riRKBLWsHx6D1KhcJebYhAPn3cO6A1sspYhk4O6CvUtKms042R+Xxby3ZjXd/4YOnOtg=="],
+
+    "opaca-cli/opaca-dev/opaca": ["opaca@0.0.8", "", { "peerDependencies": { "react": "19.2.1", "react-dom": "19.2.1" } }, "sha512-ZUcNvGqB28v1/MZCwWR+dZ4d5qhOmxD6GOY351wFGWAb1LziN3UJ9CzwU0k5ohul549CJ7S8O5NekqZA4cGdog=="],
   }
 }

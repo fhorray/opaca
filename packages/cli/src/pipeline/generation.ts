@@ -152,6 +152,8 @@ function getWatchTargets(
   targets.add(resolve(ctx.cwd, ctx.configFile));
   const apiDir = join(ctx.cwd, "src", "api");
   targets.add(apiDir);
+  const srcDir = join(ctx.cwd, "src");
+  targets.add(srcDir);
   if (existsSync(prepareResult.pagesDir)) {
     targets.add(prepareResult.pagesDir);
   }

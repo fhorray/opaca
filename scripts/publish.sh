@@ -226,6 +226,96 @@ while IFS= read -r pkg; do
     echo -e "   ${GREEN}✔${RESET} Build completed for ${CYAN}$pkg${RESET}"
   fi
 
+  # Step 1.5: resolve workspace:* ranges for this package.json
+  echo -e "${GRAY}→${RESET} Resolving ${BOLD}workspace:*${RESET} ranges in ${GREEN}$TARGET/package.json${RESET}"
+  node - "$TARGET/package.json" <<'NODE'
+const fs = require("fs");
+const path = require("path");
+
+const targetRel = process.argv[2];
+if (!targetRel) {
+  process.exit(0);
+}
+
+const rootDir = process.cwd();
+const targetPath = path.isAbsolute(targetRel)
+  ? targetRel
+  : path.join(rootDir, targetRel);
+
+let targetJson;
+try {
+  targetJson = JSON.parse(fs.readFileSync(targetPath, "utf8"));
+} catch {
+  process.exit(0);
+}
+
+// Collect local workspace package versions from packages/*/package.json
+const versions = {};
+try {
+  const pkgsDir = path.join(rootDir, "packages");
+  for (const entry of fs.readdirSync(pkgsDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const pkgPath = path.join(pkgsDir, entry.name, "package.json");
+    if (!fs.existsSync(pkgPath)) continue;
+
+    try {
+      const json = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+      if (json && json.name && json.version) {
+        versions[json.name] = json.version;
+      }
+    } catch {
+      // ignore invalid JSON
+    }
+  }
+} catch {
+  // no packages directory or not readable – nothing to resolve
+  process.exit(0);
+}
+
+const sections = [
+  "dependencies",
+  "devDependencies",
+  "peerDependencies",
+  "optionalDependencies",
+  "catalog",
+];
+
+let changed = false;
+for (const section of sections) {
+  const block = targetJson[section];
+  if (!block || typeof block !== "object") continue;
+
+  for (const depName of Object.keys(block)) {
+    const current = block[depName];
+    if (typeof current !== "string") continue;
+    if (!current.startsWith("workspace:")) continue;
+
+    const protocol = current.slice("workspace:".length);
+    const depVersion = versions[depName];
+    if (!depVersion) continue;
+
+    let prefix = "";
+    if (protocol === "^" || protocol === "~") {
+      prefix = protocol;
+    }
+
+    block[depName] = prefix + depVersion;
+    changed = true;
+  }
+}
+
+if (changed) {
+  fs.writeFileSync(targetPath, JSON.stringify(targetJson, null, 2) + "\n");
+}
+NODE
+  RESOLVE_EXIT=$?
+
+  if [ $RESOLVE_EXIT -ne 0 ]; then
+    echo -e "   ${RED}✖${RESET} Failed to resolve workspace:* for ${CYAN}$pkg${RESET} ${GRAY}(exit $RESOLVE_EXIT)${RESET}"
+    FAILED=1
+    continue
+  fi
+
   # Step 2: npm publish with tag
   echo -e "${GRAY}→${RESET} Running ${BOLD}npm publish --tag \"$NPMPUBLISH_TAG\"${RESET} in ${GREEN}$TARGET${RESET}"
   (cd "$TARGET" && npm publish --tag "$NPMPUBLISH_TAG")

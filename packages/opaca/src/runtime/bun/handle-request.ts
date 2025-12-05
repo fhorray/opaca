@@ -1,6 +1,5 @@
 import type { BunaRoute, ResolvedBunaConfig } from "../../core/config/types";
 import type { BunaEnv, BunaExecutionContext } from "../types";
-import { setRouterSnapshot } from "opaca-devtools"
 
 export async function handleRequest(
   request: Request,
@@ -47,6 +46,5 @@ async function matchRoute(opts: {
 }): Promise<RouteMatch | null> {
   // here we can use the opaca router to find the route + method
   // for now its just a stub and return null
-  console.log(opts.routes)
   return null;
 }

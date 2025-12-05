@@ -1,6 +1,5 @@
 import { cancel, intro, isCancel, log, outro, select } from "@clack/prompts";
 import { parseCommandLine } from "./utils/flags";
-import { findWorkspaceRoot } from "./utils/workspace";
 import type { CommandArgs, CommandContext, OpacaCommand } from "./types";
 
 type RunOptions = {
@@ -65,12 +64,11 @@ export async function runCommand(
 
   const cwd = options.cwd ?? process.cwd();
   const configFile = options.configFile ?? "opaca.config.ts";
-  const workspaceRoot = findWorkspaceRoot(cwd);
   const ctx: CommandContext = {
     cwd,
     configFile,
     env: process.env,
-    workspaceRoot,
+    workspaceRoot: null,
   };
 
   await command.run(ctx, args);
@@ -120,7 +118,6 @@ Commands:`);
 Options:
   --config <file>     Loads the given config file (default: opaca.config.ts)
   --runtime <target>  Selects build runtime (bun|node|cloudflare|deno)
-  --task-runner <id>  Override the default task runner
   -h, --help          Show this message
 `);
 }

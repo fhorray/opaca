@@ -1,6 +1,6 @@
 {
   "name": "opaca-cli",
-  "version": "0.0.9",
+  "version": "0.0.16",
   "private": false,
   "type": "module",
   "bin": {
@@ -29,13 +29,13 @@
     "@types/bun": "latest",
     "@types/node": "^24.10.1",
     "typescript": "^5.0.0",
-    "opaca": "workspace:*",
-    "opaca-dev": "workspace:*"
+    "opaca": "0.0.9",
+    "opaca-dev": "0.0.9"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
-    "opaca": "workspace:*",
-    "opaca-dev": "workspace:*"
+    "opaca": "0.0.9",
+    "opaca-dev": "0.0.9"
   },
   "devDependencies": {
     "@types/bun": "latest",

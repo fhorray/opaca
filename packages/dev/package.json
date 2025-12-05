@@ -40,7 +40,7 @@
     "@types/bun": "latest",
     "@cloudflare/workers-types": "^4.20251202.0",
     "bun-plugin-tailwind": "^0.1.2",
-    "opaca": "^0.0.8"
+    "opaca": "workspace:*"
   },
   "dependencies": {
     "bun-plugin-tailwind": "^0.1.2"
@@ -49,11 +49,11 @@
     "@cloudflare/workers-types": "^4.20251202.0",
     "@types/bun": "latest",
     "@types/node": "^24.10.1",
-    "opaca": "^0.0.8",
+    "opaca": "workspace:*",
     "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "bun": "^1.2.0",
-    "opaca": "^0.0.8"
+    "opaca": "workspace:*"
   }
 }

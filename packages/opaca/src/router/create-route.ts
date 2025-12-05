@@ -372,7 +372,14 @@ export function createRoute<C extends RouteContext = RouteContext>(
 
       const layouts = consumePendingLayouts<C>();
       const root = createRoot(container);
-      root.render(wrapWithLayouts(createElement(ComponentWithMeta, ctx as C), layouts, ctx));
+
+      root.render(
+        wrapWithLayouts(
+          createElement(ComponentWithMeta, ctx as C),
+          layouts,
+          ctx,
+        ),
+      );
     });
   }
 

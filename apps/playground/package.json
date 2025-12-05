@@ -8,21 +8,22 @@
     "dev": "bun run opaca:prepare && bun --hot src/entry.ts",
     "build": "bun run opaca:prepare && bun run .opaca/build.ts",
     "deploy:cf": "NODE_ENV=production bun run build --runtime cloudflare && wrangler deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "bun-plugin-tailwind": "^0.1.2",
-    "opaca": "0.0.8",
+    "opaca": "workspace:*",
     "react": "19.2.1",
     "react-dom": "^19.2.1",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
-    "opaca-dev": "0.0.8",
+    "opaca-dev": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/bun": "latest",
-    "@cloudflare/workers-types": "^4.20251202.0",
-    "opaca-devtools": "0.0.8"
+    "@types/node": "latest",
+    "opaca-devtools": "workspace:*"
   }
 }

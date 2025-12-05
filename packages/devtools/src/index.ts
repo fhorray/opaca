@@ -27,3 +27,5 @@ export {
 
 export { DevtoolsPanel } from "./panel";
 export { withDevtools } from "./with-devtools";
+
+export { useDevtools } from "./react/use-devtools"

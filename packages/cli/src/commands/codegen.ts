@@ -1,12 +1,14 @@
-import { spinner } from "@clack/prompts";
-import { generateRoutes } from "opaca-dev";
-import { loadConfig } from "../utils/load-config";
-import type { CommandContext } from "../types";
+import { runGenerationPipeline } from "../pipeline/generation";
+import type { OpacaCommand } from "../types";
 
-export async function runCodegenCommand({ configFile }: CommandContext) {
-  const s = spinner();
-  s.start(`Generating routes from ${configFile}...`);
-  const config = await loadConfig(configFile);
-  await generateRoutes(config);
-  s.stop("Routes updated successfully!");
-}
+export const codegenCommand: OpacaCommand = {
+  name: "codegen",
+  description: "Regenerates the routes defined in the config.",
+  async run(ctx, args) {
+    await runGenerationPipeline({
+      ...ctx,
+      watchMode: Boolean(args.flags["watch"]),
+      verbose: Boolean(args.flags["verbose"]),
+    });
+  },
+};

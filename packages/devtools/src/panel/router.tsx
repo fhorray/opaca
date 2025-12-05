@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { disableDevtools } from '../core';
 import type { RouterDevtoolsSnapshot } from '../types';
 import { baseCardClass, monoClass } from './utils';
+import {
+  normalizeRouteName,
+  normalizeNestedRouteName,
+} from '../shared/route-utils';
 
 // --- ICONS (SVG inline, compatíveis com react) ---
 
@@ -83,7 +87,7 @@ async function openInEditor(filePath: string): Promise<void> {
 
 // --- ROUTE TREE TYPES / BUILDERS ---
 
-type RouteNode = {
+export type RouteNode = {
   name: string;
   fullPath: string;
   children: RouteNode[];
@@ -130,90 +134,6 @@ function buildRouteTree(routes: Record<string, string>): RouteNode[] {
   });
 
   return root;
-}
-
-// --- HELPERS DE SCAFFOLD ---
-
-function normalizeRouteName(input: string): {
-  fileName: string;
-  componentName: string;
-} {
-  const clean = input.replace(/[^a-zA-Z0-9-_]/g, '');
-
-  if (!clean)
-    return {
-      fileName: 'src/routes/new-route.tsx',
-      componentName: 'NewRoutePage',
-    };
-
-  const pascal = clean
-    .toLowerCase()
-    .replace(/(^\w|[-_]\w)/g, (m) => m.replace(/[-_]/, '').toUpperCase());
-
-  const component = pascal.endsWith('Page') ? pascal : `${pascal}Page`;
-  const fileName = `src/routes/${pascal.toLowerCase()}.tsx`;
-
-  return { fileName, componentName: component };
-}
-
-function normalizeNestedRouteName(
-  parent: RouteNode,
-  input: string,
-): { fileName: string; componentName: string } {
-  const raw = input.trim();
-
-  if (!raw) {
-    return {
-      fileName: 'src/routes/new-subroute.tsx',
-      componentName: 'NewSubroutePage',
-    };
-  }
-
-  const cleanedSegment = raw
-    .replace(/^\//, '')
-    .replace(/[^a-zA-Z0-9[\]:_-]/g, '');
-
-  const isParamSegment =
-    cleanedSegment.startsWith(':') || /^\[.+\]$/.test(cleanedSegment);
-
-  let fsChildSegment = cleanedSegment;
-
-  if (cleanedSegment.startsWith(':')) {
-    fsChildSegment = `[${cleanedSegment.slice(1)}]`;
-  }
-
-  const parentPathSegments = parent.fullPath.split('/').filter(Boolean);
-
-  const fsParentSegments = parentPathSegments.map((segment) =>
-    segment.startsWith(':') ? `[${segment.slice(1)}]` : segment,
-  );
-
-  const fileName = `src/routes/${[
-    ...fsParentSegments,
-    fsChildSegment.toLowerCase(),
-  ].join('/')}.tsx`;
-
-  const toPascal = (value: string): string =>
-    value
-      .replace(/^\[/, '')
-      .replace(/\]$/, '')
-      .replace(/^:/, '')
-      .split(/[-_]/)
-      .filter(Boolean)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join('');
-
-  const pascalParent = parentPathSegments.map(toPascal).join('');
-  const pascalChild = toPascal(
-    cleanedSegment || (isParamSegment ? 'Param' : 'Subroute'),
-  );
-
-  const baseName = pascalParent + pascalChild || 'NestedRoute';
-  const componentName = baseName.endsWith('Page')
-    ? baseName
-    : `${baseName}Page`;
-
-  return { fileName, componentName };
 }
 
 // --- UI COMPONENTS ---

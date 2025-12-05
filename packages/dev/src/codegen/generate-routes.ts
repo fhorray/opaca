@@ -1,10 +1,40 @@
-import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, stat, writeFile, readFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { CSS_ENTRY_PATH, FAVICON_ENTRY_PATH, ROOT_LAYOUT_ENTRY_PATH } from "./constants";
 import { ResolvedBunaConfig } from "opaca";
 
 const LAYOUT_EXTENSIONS = [".tsx", ".ts", ".jsx", ".js"];
 const API_DIR = "src/api";
+
+type SeoMeta = Record<string, unknown>;
+
+type SeoHealth = {
+  score: number;
+  issues: string[];
+  checks: Record<string, boolean>;
+};
+
+type RouteManifestEntry = {
+  path: string;
+  routeFile: string;
+  htmlPath: string;
+  entryPath: string;
+  seo: SeoMeta | null;
+  seoHealth: SeoHealth;
+};
+
+type ManifestSummary = {
+  totalRoutes: number;
+  averageScore: number;
+  missingMetaRoutes: number;
+  healthyRoutes: number;
+  healthWarnings: string[];
+};
+
+type MetaExtraction =
+  | { type: "object"; text: string }
+  | { type: "function" }
+  | { type: "none" };
 
 async function ensureDir(path: string) {
   await mkdir(path, { recursive: true });
@@ -155,6 +185,7 @@ export async function generateRoutes(config: ResolvedBunaConfig) {
   let apiHelpers = "";
   let apiRouteInit = "";
   let routesObject = "export const routes = {\n";
+  const manifestEntries: RouteManifestEntry[] = [];
 
   for (const [index, file] of files.entries()) {
     // 1. HTTP route
@@ -184,6 +215,16 @@ export async function generateRoutes(config: ResolvedBunaConfig) {
       layoutPaths: layoutChain,
       routeImportPath,
       routePath,
+    });
+
+    const seoMeta = await parseRouteMeta(file);
+    manifestEntries.push({
+      path: routePath,
+      routeFile: toPosixPath(relative(projectRoot, file)),
+      htmlPath: toPosixPath(relative(projectRoot, htmlDiskPath)),
+      entryPath: toPosixPath(relative(projectRoot, entryDiskPath)),
+      seo: seoMeta,
+      seoHealth: computeSeoHealth(seoMeta),
     });
 
     // 3. script src relative to HTML
@@ -289,6 +330,15 @@ ${routesObject}
 `;
 
   await writeFile(join(outDir, "routes.generated.ts"), tsContent, "utf8");
+
+  const manifestDir = join(projectRoot, ".opaca");
+  await ensureDir(manifestDir);
+  const manifest = {
+    generatedAt: new Date().toISOString(),
+    summary: createManifestSummary(manifestEntries),
+    routes: manifestEntries,
+  };
+  await writeFile(join(manifestDir, "manifest.json"), JSON.stringify(manifest, null, 2), "utf8");
 }
 
 async function fileExists(pathname: string): Promise<boolean> {
@@ -388,6 +438,548 @@ async function writeRouteEntryModule(params: {
 
   await ensureDir(dirname(params.entryDiskPath));
   await writeFile(params.entryDiskPath, contents, "utf8");
+}
+
+async function parseRouteMeta(filePath: string): Promise<SeoMeta | null> {
+  try {
+    const source = await readFile(filePath, "utf8");
+    const extraction = extractMetaBlock(source);
+    if (extraction.type !== "object" || !extraction.text) {
+      return null;
+    }
+
+    const parser = new MetaParser(extraction.text);
+    const value = parser.parseValue();
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return value as SeoMeta;
+    }
+  } catch {
+    // ignore parse errors
+  }
+
+  return null;
+}
+
+function createManifestSummary(entries: RouteManifestEntry[]): ManifestSummary {
+  const totalRoutes = entries.length;
+  const averageScore =
+    totalRoutes === 0
+      ? 0
+      : Number(
+        (
+          entries.reduce((acc, entry) => acc + entry.seoHealth.score, 0) / totalRoutes
+        ).toFixed(2),
+      );
+  const missingMetaRoutes = entries.filter(entry => !entry.seo).length;
+  const healthyRoutes = entries.filter(entry => entry.seoHealth.score >= 70).length;
+  const healthWarnings = Array.from(
+    new Set(entries.flatMap(entry => entry.seoHealth.issues)),
+  );
+
+  return {
+    totalRoutes,
+    averageScore,
+    missingMetaRoutes,
+    healthyRoutes,
+    healthWarnings,
+  };
+}
+
+function toPosixPath(pathname: string): string {
+  return pathname.replace(/\\/g, "/");
+}
+
+function computeSeoHealth(meta: SeoMeta | null): SeoHealth {
+  const issues: string[] = [];
+  const checks: Record<string, boolean> = {
+    hasMeta: Boolean(meta),
+    hasTitle: false,
+    hasDescription: false,
+    hasKeywords: false,
+    hasCanonical: false,
+    hasRobots: false,
+    hasOpenGraph: false,
+    hasTwitter: false,
+  };
+
+  if (!meta) {
+    issues.push("Route does not expose metadata.");
+    return { score: 10, issues, checks };
+  }
+
+  const titleValue = meta.title;
+  if (typeof titleValue === "string" && titleValue.trim().length > 0) {
+    checks.hasTitle = true;
+  } else {
+    issues.push("Missing <title>.");
+  }
+
+  const descriptionValue = meta.description;
+  if (typeof descriptionValue === "string" && descriptionValue.trim().length > 0) {
+    checks.hasDescription = true;
+  } else {
+    issues.push("Missing meta description.");
+  }
+
+  const keywordsValue = meta.keywords;
+  if (Array.isArray(keywordsValue) && keywordsValue.length > 0) {
+    checks.hasKeywords = true;
+  } else {
+    issues.push("No keywords defined.");
+  }
+
+  const canonicalValue = meta.canonicalUrl;
+  if (typeof canonicalValue === "string" && canonicalValue.trim().length > 0) {
+    checks.hasCanonical = true;
+  } else {
+    issues.push("Missing canonical URL.");
+  }
+
+  if (meta.robots != null) {
+    checks.hasRobots = true;
+  } else {
+    issues.push("Missing robots directives.");
+  }
+
+  if (meta.openGraph && typeof meta.openGraph === "object") {
+    checks.hasOpenGraph = true;
+  } else {
+    issues.push("Missing Open Graph metadata.");
+  }
+
+  if (meta.twitter && typeof meta.twitter === "object") {
+    checks.hasTwitter = true;
+  } else {
+    issues.push("Missing Twitter card metadata.");
+  }
+
+  let score = 100;
+  if (!checks.hasTitle) score -= 25;
+  if (!checks.hasDescription) score -= 20;
+  if (!checks.hasKeywords) score -= 5;
+  if (!checks.hasCanonical) score -= 10;
+  if (!checks.hasRobots) score -= 5;
+  if (!checks.hasOpenGraph) score -= 10;
+  if (!checks.hasTwitter) score -= 10;
+
+  score = Math.max(0, Math.min(100, score));
+
+  return { score, issues, checks };
+}
+
+function extractMetaBlock(source: string): MetaExtraction {
+  const metaPattern = /\.meta\s*=/g;
+  let match: RegExpExecArray | null = null;
+
+  while ((match = metaPattern.exec(source)) !== null) {
+    let cursor = match.index + match[0].length;
+    cursor = skipWhitespace(source, cursor);
+    const char = source[cursor];
+
+    if (char === "{") {
+      const block = captureBalancedBraces(source, cursor);
+      if (block) {
+        return { type: "object", text: block };
+      }
+      return { type: "object", text: "" };
+    }
+
+    if (!char) {
+      return { type: "none" };
+    }
+
+    if (char === "(" || /[A-Za-z_$]/.test(char)) {
+      return { type: "function" };
+    }
+  }
+
+  return { type: "none" };
+}
+
+function skipWhitespace(text: string, start: number): number {
+  let idx = start;
+  while (idx < text.length) {
+    const char = text[idx];
+    if (char === " " || char === "\t" || char === "\n" || char === "\r") {
+      idx++;
+      continue;
+    }
+
+    if (char === "/" && text[idx + 1] === "/") {
+      idx += 2;
+      while (idx < text.length && text[idx] !== "\n" && text[idx] !== "\r") {
+        idx++;
+      }
+      continue;
+    }
+
+    if (char === "/" && text[idx + 1] === "*") {
+      idx += 2;
+      while (idx < text.length) {
+        if (text[idx] === "*" && text[idx + 1] === "/") {
+          idx += 2;
+          break;
+        }
+        idx++;
+      }
+      continue;
+    }
+
+    break;
+  }
+
+  return idx;
+}
+
+function captureBalancedBraces(source: string, start: number): string | null {
+  let depth = 0;
+  let idx = start;
+  const length = source.length;
+  let inString: string | null = null;
+  let escaping = false;
+
+  while (idx < length) {
+    const char = source[idx];
+
+    if (escaping) {
+      escaping = false;
+      idx++;
+      continue;
+    }
+
+    if (inString) {
+      if (char === "\\") {
+        escaping = true;
+      } else if (char === inString) {
+        inString = null;
+      }
+      idx++;
+      continue;
+    }
+
+    if (char === '"' || char === "'" || char === "`") {
+      inString = char;
+      idx++;
+      continue;
+    }
+
+    if (char === "{") {
+      depth++;
+      idx++;
+      continue;
+    }
+
+    if (char === "}") {
+      depth--;
+      idx++;
+      if (depth === 0) {
+        return source.slice(start, idx);
+      }
+      continue;
+    }
+
+    if (char === "/" && source[idx + 1] === "/") {
+      idx += 2;
+      while (idx < length && source[idx] !== "\n" && source[idx] !== "\r") {
+        idx++;
+      }
+      continue;
+    }
+
+    if (char === "/" && source[idx + 1] === "*") {
+      idx += 2;
+      while (idx < length) {
+        if (source[idx] === "*" && source[idx + 1] === "/") {
+          idx += 2;
+          break;
+        }
+        idx++;
+      }
+      continue;
+    }
+
+    idx++;
+  }
+
+  return null;
+}
+
+class MetaParser {
+  private index = 0;
+
+  constructor(private readonly text: string) { }
+
+  parseValue(): unknown {
+    this.skipWhitespace();
+    if (this.index >= this.text.length) {
+      throw new Error("Unexpected end of meta object");
+    }
+
+    const char = this.text[this.index];
+
+    if (char === "{") {
+      return this.parseObject();
+    }
+
+    if (char === "[") {
+      return this.parseArray();
+    }
+
+    if (char === '"' || char === "'" || char === "`") {
+      return this.parseString();
+    }
+
+    if (char === "-" || char === "+" || /[0-9]/.test(char)) {
+      return this.parseNumber();
+    }
+
+    return this.parseIdentifier();
+  }
+
+  private parseObject(): Record<string, unknown> {
+    if (this.text[this.index] !== "{") {
+      throw new Error("Expected object literal");
+    }
+
+    this.index++;
+    const result: Record<string, unknown> = {};
+
+    while (true) {
+      this.skipWhitespace();
+
+      if (this.index >= this.text.length) {
+        throw new Error("Unexpected end of object");
+      }
+
+      if (this.text[this.index] === "}") {
+        this.index++;
+        break;
+      }
+
+      const key = this.parsePropertyName();
+      this.skipWhitespace();
+
+      if (this.text[this.index] !== ":") {
+        throw new Error("Missing colon in object literal");
+      }
+
+      this.index++;
+      const value = this.parseValue();
+      result[key] = value;
+
+      this.skipWhitespace();
+      const next = this.text[this.index];
+      if (next === ",") {
+        this.index++;
+        continue;
+      }
+
+      if (next === "}") {
+        continue;
+      }
+
+      throw new Error("Unexpected object delimiter");
+    }
+
+    return result;
+  }
+
+  private parseArray(): unknown[] {
+    if (this.text[this.index] !== "[") {
+      throw new Error("Expected array literal");
+    }
+
+    this.index++;
+    const items: unknown[] = [];
+
+    while (true) {
+      this.skipWhitespace();
+
+      if (this.index >= this.text.length) {
+        throw new Error("Unexpected end of array");
+      }
+
+      if (this.text[this.index] === "]") {
+        this.index++;
+        break;
+      }
+
+      items.push(this.parseValue());
+
+      this.skipWhitespace();
+      const next = this.text[this.index];
+      if (next === ",") {
+        this.index++;
+        continue;
+      }
+
+      if (next === "]") {
+        continue;
+      }
+
+      throw new Error("Unexpected array delimiter");
+    }
+
+    return items;
+  }
+
+  private parseString(): string {
+    const quote = this.text[this.index];
+    this.index++;
+    let value = "";
+
+    while (this.index < this.text.length) {
+      const char = this.text[this.index++];
+
+      if (char === "\\") {
+        if (this.index >= this.text.length) {
+          break;
+        }
+        const next = this.text[this.index++];
+        switch (next) {
+          case "n":
+            value += "\n";
+            break;
+          case "r":
+            value += "\r";
+            break;
+          case "t":
+            value += "\t";
+            break;
+          case "b":
+            value += "\b";
+            break;
+          case "f":
+            value += "\f";
+            break;
+          default:
+            value += next;
+        }
+        continue;
+      }
+
+      if (char === quote) {
+        return value;
+      }
+
+      value += char;
+    }
+
+    throw new Error("Unterminated string literal");
+  }
+
+  private parseNumber(): number {
+    const start = this.index;
+
+    if (this.text[this.index] === "-" || this.text[this.index] === "+") {
+      this.index++;
+    }
+
+    while (this.index < this.text.length && /[0-9]/.test(this.text[this.index])) {
+      this.index++;
+    }
+
+    if (this.text[this.index] === ".") {
+      this.index++;
+      while (this.index < this.text.length && /[0-9]/.test(this.text[this.index])) {
+        this.index++;
+      }
+    }
+
+    if (this.text[this.index] === "e" || this.text[this.index] === "E") {
+      this.index++;
+      if (this.text[this.index] === "+" || this.text[this.index] === "-") {
+        this.index++;
+      }
+      while (this.index < this.text.length && /[0-9]/.test(this.text[this.index])) {
+        this.index++;
+      }
+    }
+
+    const raw = this.text.slice(start, this.index);
+    const value = Number(raw);
+    if (Number.isNaN(value)) {
+      throw new Error(`Invalid number literal ${raw}`);
+    }
+
+    return value;
+  }
+
+  private parseIdentifier(): unknown {
+    const start = this.index;
+
+    while (this.index < this.text.length && /[A-Za-z0-9_$]/.test(this.text[this.index])) {
+      this.index++;
+    }
+
+    const token = this.text.slice(start, this.index);
+    if (token === "true") return true;
+    if (token === "false") return false;
+    if (token === "null") return null;
+
+    throw new Error(`Unsupported identifier ${token}`);
+  }
+
+  private parsePropertyName(): string {
+    this.skipWhitespace();
+
+    if (this.index >= this.text.length) {
+      throw new Error("Unexpected end while reading property name");
+    }
+
+    const char = this.text[this.index];
+    if (char === '"' || char === "'" || char === "`") {
+      return this.parseString();
+    }
+
+    const start = this.index;
+    while (this.index < this.text.length && /[A-Za-z0-9_$]/.test(this.text[this.index])) {
+      this.index++;
+    }
+
+    if (start === this.index) {
+      throw new Error("Invalid property name");
+    }
+
+    return this.text.slice(start, this.index);
+  }
+
+  private skipWhitespace(): void {
+    while (this.index < this.text.length) {
+      const char = this.text[this.index];
+
+      if (char === " " || char === "\t" || char === "\n" || char === "\r") {
+        this.index++;
+        continue;
+      }
+
+      if (char === "/" && this.text[this.index + 1] === "/") {
+        this.index += 2;
+        while (
+          this.index < this.text.length &&
+          this.text[this.index] !== "\n" &&
+          this.text[this.index] !== "\r"
+        ) {
+          this.index++;
+        }
+        continue;
+      }
+
+      if (char === "/" && this.text[this.index + 1] === "*") {
+        this.index += 2;
+        while (this.index < this.text.length) {
+          if (this.text[this.index] === "*" && this.text[this.index + 1] === "/") {
+            this.index += 2;
+            break;
+          }
+          this.index++;
+        }
+        continue;
+      }
+
+      break;
+    }
+  }
 }
 
 function toRelativeAssetPath(pathname: string): string {

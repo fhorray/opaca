@@ -1,0 +1,143 @@
+{
+  "generatedAt": "2025-12-05T02:12:25.699Z",
+  "summary": {
+    "totalRoutes": 4,
+    "averageScore": 40,
+    "missingMetaRoutes": 2,
+    "healthyRoutes": 1,
+    "healthWarnings": [
+      "Route does not expose metadata.",
+      "Missing meta description.",
+      "No keywords defined.",
+      "Missing canonical URL.",
+      "Missing robots directives.",
+      "Missing Open Graph metadata.",
+      "Missing Twitter card metadata."
+    ]
+  },
+  "routes": [
+    {
+      "path": "/",
+      "routeFile": "src/routes/index.tsx",
+      "htmlPath": ".opaca/pages/index.html",
+      "entryPath": ".opaca/pages/index.entry.ts",
+      "seo": {
+        "title": "About - Opaca Playground",
+        "description": "Example about page using Opaca createRoute.",
+        "keywords": [
+          "opaca",
+          "playground",
+          "about"
+        ],
+        "htmlLang": "en",
+        "robots": {
+          "index": true,
+          "follow": true
+        },
+        "canonicalUrl": "https://example.com/about",
+        "openGraph": {
+          "title": "About Opaca Playground",
+          "description": "Example about page using Opaca createRoute.",
+          "url": "https://example.com/about",
+          "siteName": "Opaca Playground",
+          "type": "website"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "About Opaca Playground",
+          "description": "Example about page using Opaca createRoute."
+        }
+      },
+      "seoHealth": {
+        "score": 100,
+        "issues": [],
+        "checks": {
+          "hasMeta": true,
+          "hasTitle": true,
+          "hasDescription": true,
+          "hasKeywords": true,
+          "hasCanonical": true,
+          "hasRobots": true,
+          "hasOpenGraph": true,
+          "hasTwitter": true
+        }
+      }
+    },
+    {
+      "path": "/blog",
+      "routeFile": "src/routes/blog/index.tsx",
+      "htmlPath": ".opaca/pages/blog/index.html",
+      "entryPath": ".opaca/pages/blog/index.entry.ts",
+      "seo": null,
+      "seoHealth": {
+        "score": 10,
+        "issues": [
+          "Route does not expose metadata."
+        ],
+        "checks": {
+          "hasMeta": false,
+          "hasTitle": false,
+          "hasDescription": false,
+          "hasKeywords": false,
+          "hasCanonical": false,
+          "hasRobots": false,
+          "hasOpenGraph": false,
+          "hasTwitter": false
+        }
+      }
+    },
+    {
+      "path": "/blog/:id",
+      "routeFile": "src/routes/blog/[id].tsx",
+      "htmlPath": ".opaca/pages/blog/[id].html",
+      "entryPath": ".opaca/pages/blog/[id].entry.ts",
+      "seo": {
+        "title": "Post Details!"
+      },
+      "seoHealth": {
+        "score": 40,
+        "issues": [
+          "Missing meta description.",
+          "No keywords defined.",
+          "Missing canonical URL.",
+          "Missing robots directives.",
+          "Missing Open Graph metadata.",
+          "Missing Twitter card metadata."
+        ],
+        "checks": {
+          "hasMeta": true,
+          "hasTitle": true,
+          "hasDescription": false,
+          "hasKeywords": false,
+          "hasCanonical": false,
+          "hasRobots": false,
+          "hasOpenGraph": false,
+          "hasTwitter": false
+        }
+      }
+    },
+    {
+      "path": "/test",
+      "routeFile": "src/routes/test.tsx",
+      "htmlPath": ".opaca/pages/test.html",
+      "entryPath": ".opaca/pages/test.entry.ts",
+      "seo": null,
+      "seoHealth": {
+        "score": 10,
+        "issues": [
+          "Route does not expose metadata."
+        ],
+        "checks": {
+          "hasMeta": false,
+          "hasTitle": false,
+          "hasDescription": false,
+          "hasKeywords": false,
+          "hasCanonical": false,
+          "hasRobots": false,
+          "hasOpenGraph": false,
+          "hasTwitter": false
+        }
+      }
+    }
+  ]
+}

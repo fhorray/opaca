@@ -256,8 +256,8 @@ export async function runBunaBuild(
     delete parsed.runtime;
   }
 
-  if (!runtime && process.env.BUNA_RUNTIME_TARGET) {
-    const normalized = process.env.BUNA_RUNTIME_TARGET.toLowerCase();
+  if (!runtime && process.env.OPACA_RUNTIME_TARGET) {
+    const normalized = process.env.OPACA_RUNTIME_TARGET.toLowerCase();
     if (isBuildRuntime(normalized)) {
       runtime = normalized;
     }

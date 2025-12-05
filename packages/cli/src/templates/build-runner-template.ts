@@ -1,48 +1,52 @@
 export const BUILD_RUNNER_TEMPLATE = `#!/usr/bin/env bun
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
 import { runBunaBuild } from "opaca-dev";
 
-function readRuntimeMarker(): string | undefined {
-  let current = process.cwd();
-  while (true) {
-    const candidate = path.join(current, ".opaca-runtime-target");
-    if (existsSync(candidate)) {
-      try {
-        const content = readFileSync(candidate, "utf8").trim();
-        return content || undefined;
-      } catch {
-        return undefined;
-      }
-    }
+type Runtime = "bun" | "node" | "cloudflare" | "deno";
 
-    const parent = path.dirname(current);
-    if (parent === current) {
-      break;
+function parseRuntimeFromArgs(argv: string[]): Runtime | undefined {
+  for (let index = 0; index < argv.length; index++) {
+    const arg = argv[index];
+    if (arg === "--runtime") {
+      return normalizeRuntime(argv[index + 1]);
     }
-    current = parent;
+    if (arg.startsWith("--runtime=")) {
+      const [, value] = arg.split("=", 2);
+      return normalizeRuntime(value);
+    }
   }
-
   return undefined;
 }
 
-function withRuntimeArgs(args: string[]): string[] {
-  if (args.some(arg => arg.startsWith("--runtime"))) {
-    return args;
+function normalizeRuntime(value?: string): Runtime | undefined {
+  if (!value) {
+    return undefined;
   }
-
-  const runtime = readRuntimeMarker();
-  if (runtime) {
-    return [...args, "--runtime", runtime];
+  const normalized = value.toLowerCase();
+  if (["bun", "node", "cloudflare", "deno"].includes(normalized)) {
+    return normalized as Runtime;
   }
-
-  return args;
+  return undefined;
 }
 
-const forwardedArgs = withRuntimeArgs(process.argv.slice(2));
+function resolveRuntime(): Runtime {
+  const fromArgs = parseRuntimeFromArgs(process.argv.slice(2));
+  if (fromArgs) {
+    return fromArgs;
+  }
+  const envRuntime = process.env.OPACA_RUNTIME;
+  const normalized = normalizeRuntime(envRuntime);
+  if (normalized) {
+    return normalized;
+  }
+  return "bun";
+}
+
+const forwardedArgs = process.argv.slice(2);
+const runtime = resolveRuntime();
 
 await runBunaBuild({
   cwd: process.cwd(),
   argv: forwardedArgs,
+  runtime,
 });
 `;

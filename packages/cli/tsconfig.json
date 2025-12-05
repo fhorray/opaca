@@ -9,5 +9,5 @@
     "composite": true,
     "noEmit": false
   },
-  "include": ["src", "../opaca-dev/src", "../opaca/src"]
+  "include": ["src", "../dev/src", "../opaca/src"]
 }

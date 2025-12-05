@@ -29,13 +29,13 @@
     "@types/bun": "latest",
     "@types/node": "^24.10.1",
     "typescript": "^5.0.0",
-    "opaca": "^0.0.8",
-    "opaca-dev": "^0.0.8"
+    "opaca": "workspace:*",
+    "opaca-dev": "workspace:*"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
-    "opaca": "^0.0.8",
-    "opaca-dev": "^0.0.8"
+    "opaca": "workspace:*",
+    "opaca-dev": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -14,13 +14,11 @@
     "apps/*"
   ],
   "scripts": {
-    "wkadd": "bash scripts/add.sh",
-    "wkrm": "bash scripts/remove.sh",
-    "wklink": "bash scripts/link.sh",
-    "wkunlink": "bash scripts/unlink.sh",
+    "wklink": "bash scripts/link-pkg.sh",
+    "wkunlink": "bash scripts/unlinklink-pkg.sh",
     "wkpublish": "bash scripts/publish.sh",
-    "wkclean": "bash scripts/clean.sh",
-    "wkupdate": "bash scripts/update-pkg-versions.sh",
+    "wkclean": "bash scripts/clean-dir.sh",
+    "wkupdate": "bash scripts/update-pkg.sh",
     "codegen": "opaca codegen",
     "dev": "opaca dev",
     "build": "opaca build",
@@ -36,8 +34,8 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "opaca": "0.0.8",
-    "opaca-cli": "0.0.8",
+    "opaca": "workspace:*",
+    "opaca-cli": "workspace:*",
     "react": "19.2.1",
     "react-dom": "19.2.1"
   }

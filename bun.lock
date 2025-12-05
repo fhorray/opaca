@@ -5,8 +5,8 @@
     "": {
       "name": "opaca-monorepo",
       "dependencies": {
-        "opaca": "0.0.8",
-        "opaca-cli": "0.0.8",
+        "opaca": "workspace:*",
+        "opaca-cli": "workspace:*",
         "react": "19.2.1",
         "react-dom": "19.2.1",
       },
@@ -25,23 +25,23 @@
       "version": "0.1.0",
       "dependencies": {
         "bun-plugin-tailwind": "^0.1.2",
-        "opaca": "0.0.8",
+        "opaca": "workspace:*",
         "react": "19.2.1",
         "react-dom": "^19.2.1",
         "tailwindcss": "^4.1.11",
       },
       "devDependencies": {
-        "@cloudflare/workers-types": "^4.20251202.0",
         "@types/bun": "latest",
+        "@types/node": "latest",
         "@types/react": "^19",
         "@types/react-dom": "^19",
-        "opaca-dev": "0.0.8",
-        "opaca-devtools": "0.0.8",
+        "opaca-dev": "workspace:*",
+        "opaca-devtools": "workspace:*",
       },
     },
     "packages/cli": {
       "name": "opaca-cli",
-      "version": "0.0.8",
+      "version": "0.0.9",
       "bin": {
         "opaca": "./src/index.ts",
       },
@@ -58,7 +58,7 @@
     },
     "packages/create-opaca-app": {
       "name": "create-opaca-app",
-      "version": "0.0.8",
+      "version": "0.0.9",
       "bin": {
         "create-opaca-app": "dist/index.js",
       },
@@ -73,7 +73,7 @@
     },
     "packages/dev": {
       "name": "opaca-dev",
-      "version": "0.0.8",
+      "version": "0.0.9",
       "dependencies": {
         "bun-plugin-tailwind": "^0.1.2",
       },
@@ -81,17 +81,17 @@
         "@cloudflare/workers-types": "^4.20251202.0",
         "@types/bun": "latest",
         "@types/node": "^24.10.1",
-        "opaca": "^0.0.8",
+        "opaca": "workspace:*",
         "typescript": "^5.0.0",
       },
       "peerDependencies": {
         "bun": "^1.2.0",
-        "opaca": "^0.0.8",
+        "opaca": "workspace:*",
       },
     },
     "packages/devtools": {
       "name": "opaca-devtools",
-      "version": "0.0.8",
+      "version": "0.0.9",
       "dependencies": {
         "@nanostores/persistent": "^1.2.0",
         "@nanostores/react": "^1.0.0",
@@ -112,12 +112,13 @@
     },
     "packages/opaca": {
       "name": "opaca",
-      "version": "0.0.8",
+      "version": "0.0.9",
       "devDependencies": {
         "@types/bun": "latest",
         "@types/node": "^24.10.1",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "opaca-devtools": "workspace:*",
         "react": "19.2.1",
         "react-dom": "19.2.1",
         "typescript": "^5.0.0",

@@ -110,17 +110,12 @@ declare module "*.module.css" {
 }
 
 ${isCloudflare
-    ? `import type { Fetcher } from "@cloudflare/workers-types";
-
+    && `
 declare global {
   interface OpacaCloudflareWorkerEnv {
     ASSETS: Fetcher;
   }
-}
-
-export {};
-`
-    : ""}
+}`}
 `;
 
   const opacaConfig = `import { defineConfig } from "opaca";
